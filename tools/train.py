@@ -7,6 +7,7 @@ import random
 import imageio
 import logging
 import argparse
+import json
 
 import torch
 from tools.eval import do_evaluation
@@ -172,7 +173,7 @@ def main(args):
     # setup metric logger
     metrics_file = os.path.join(cfg.log_dir, "metrics.json")
     metric_logger = MetricLogger(delimiter="  ", output_file=metrics_file)
-    all_iters = np.arange(trainer.step, trainer.num_iters + 1)
+    all_iters = np.arange(trainer.step + (1 if args.resume_from is not None else 0), trainer.num_iters + 1)
     
     # DEBUG USE
     # do_evaluation(
@@ -185,6 +186,15 @@ def main(args):
     # )
 
     for step in metric_logger.log_every(all_iters, cfg.logging.print_freq):
+        deadline = float(os.environ.get("OMNIRE_DEADLINE_EPOCH", "inf"))
+        stop_file = os.environ.get("OMNIRE_STOP_FILE", "/root/omnire_run/STOP_TRAINING")
+        if time.time() >= deadline or os.path.exists(stop_file):
+            trainer.save_checkpoint(log_dir=cfg.log_dir, save_only_model=True, is_final=True)
+            reason = {"reason": "deadline" if time.time() >= deadline else "stop_file", "last_completed_step": int(trainer.step), "time": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+            with open(os.path.join(cfg.log_dir, "stop_reason.json"), "w") as f:
+                json.dump(reason, f, indent=2)
+            logger.info(f"Time budget stop: {reason}")
+            break
         #----------------------------------------------------------------------------
         #----------------------------     Validate     ------------------------------
         if step % cfg.logging.vis_freq == 0 and cfg.logging.vis_freq > 0:
@@ -291,8 +301,8 @@ def main(args):
         #----------------------------------------------------------------------------
         #----------------------------     Saving     --------------------------------
         do_save = step > 0 and (
-            (step % cfg.logging.saveckpt_freq == 0) or (step == trainer.num_iters)
-        ) and (args.resume_from is None)
+            (step % cfg.logging.saveckpt_freq == 0) or (step == 500) or (step == trainer.num_iters)
+        )
         if do_save:  
             trainer.save_checkpoint(
                 log_dir=cfg.log_dir,

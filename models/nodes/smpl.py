@@ -552,6 +552,9 @@ class SMPLNodes(RigidNodes):
         if self.use_voxel_deformer:
             self.template.voxel_deformer.enable_voxel_correction()
         msg = VanillaGaussians.load_state_dict(self, state_dict, **kwargs)
+        # Rebuild derived KNN indices; they are not included in the model checkpoint.
+        with torch.no_grad():
+            self.update_knn(self._means)
         return msg
 
     def get_instance_activated_gs_dict(self, ins_id: int) -> Dict[str, torch.Tensor]:

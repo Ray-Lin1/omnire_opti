@@ -710,7 +710,9 @@ class BasicTrainer(nn.Module):
             ckpt_path = os.path.join(log_dir, f"checkpoint_final.pth")
         else:
             ckpt_path = os.path.join(log_dir, f"checkpoint_{self.step:05d}.pth")
-        torch.save(self.state_dict(only_model=save_only_model), ckpt_path)
+        tmp_path = ckpt_path + ".tmp"
+        torch.save(self.state_dict(only_model=save_only_model), tmp_path)
+        os.replace(tmp_path, ckpt_path)
         logger.info(f"Saved a checkpoint to {ckpt_path}")
         
     def init_viewer(self, port: int = 8080):

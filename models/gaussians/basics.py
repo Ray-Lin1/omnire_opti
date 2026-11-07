@@ -160,51 +160,43 @@ class dataclass_gs:
             return self._quats
         
 def remove_from_optim(optimizer, deleted_mask, param_dict):
-    """removes the deleted_mask from the optimizer provided"""
-    for group_idx, group in enumerate(optimizer.param_groups):
+    """Update parameter references; Adam may still have lazy, empty state."""
+    for group in optimizer.param_groups:
         name = group["name"]
-        if name in param_dict.keys():
-            old_params = group["params"][0]
-            new_params = param_dict[name]
-            assert len(new_params) == 1
-            param_state = optimizer.state[old_params]
-            del optimizer.state[old_params]
-
-            # Modify the state directly without deleting and reassigning.
-            param_state["exp_avg"] = param_state["exp_avg"][~deleted_mask]
-            param_state["exp_avg_sq"] = param_state["exp_avg_sq"][~deleted_mask]
-
-            # Update the parameter in the optimizer's param group.
-            del optimizer.param_groups[group_idx]["params"][0]
-            del optimizer.param_groups[group_idx]["params"]
-            optimizer.param_groups[group_idx]["params"] = new_params
-            optimizer.state[new_params[0]] = param_state
+        if name not in param_dict:
+            continue
+        old_params = group["params"][0]
+        new_params = param_dict[name]
+        assert len(new_params) == 1
+        param_state = optimizer.state.pop(old_params, None)
+        group["params"] = new_params
+        if not param_state or "exp_avg" not in param_state:
+            continue
+        for key in ("exp_avg", "exp_avg_sq", "max_exp_avg_sq"):
+            if key in param_state:
+                param_state[key] = param_state[key][~deleted_mask]
+        optimizer.state[new_params[0]] = param_state
 
 def dup_in_optim(optimizer, dup_mask, param_dict, n=2):
-    """adds the parameters to the optimizer"""
-    for group_idx, group in enumerate(optimizer.param_groups):
+    """Preserve initialized moments and leave unused Adam states lazy."""
+    for group in optimizer.param_groups:
         name = group["name"]
-        if name in param_dict.keys():
-            old_params = group["params"][0]
-            new_params = param_dict[name]
-            param_state = optimizer.state[old_params]
-            repeat_dims = (n,) + tuple(1 for _ in range(param_state["exp_avg"].dim() - 1))
-            param_state["exp_avg"] = torch.cat(
-                [param_state["exp_avg"], torch.zeros_like(param_state["exp_avg"][dup_mask.squeeze()]).repeat(*repeat_dims)],
-                dim=0,
-            )
-            param_state["exp_avg_sq"] = torch.cat(
-                [
-                    param_state["exp_avg_sq"],
-                    torch.zeros_like(param_state["exp_avg_sq"][dup_mask.squeeze()]).repeat(*repeat_dims),
-                ],
-                dim=0,
-            )
-            del optimizer.state[old_params]
-            optimizer.state[new_params[0]] = param_state
-            optimizer.param_groups[group_idx]["params"] = new_params
-            del old_params
-    
+        if name not in param_dict:
+            continue
+        old_params = group["params"][0]
+        new_params = param_dict[name]
+        param_state = optimizer.state.pop(old_params, None)
+        group["params"] = new_params
+        if not param_state or "exp_avg" not in param_state:
+            continue
+        for key in ("exp_avg", "exp_avg_sq", "max_exp_avg_sq"):
+            if key in param_state:
+                value = param_state[key]
+                repeat_dims = (n,) + (1,) * (value.dim() - 1)
+                extra = torch.zeros_like(value[dup_mask.squeeze()]).repeat(*repeat_dims)
+                param_state[key] = torch.cat([value, extra], dim=0)
+        optimizer.state[new_params[0]] = param_state
+
 def k_nearest_sklearn(x: torch.Tensor, k: int):
     """
     Find k-nearest neighbors using sklearn's NearestNeighbors.
