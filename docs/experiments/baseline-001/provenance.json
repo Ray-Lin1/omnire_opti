@@ -1,0 +1,44 @@
+[
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\metrics\\images_test_2026-11-01_14-49-05.json",
+    "copy": "metrics_test.json",
+    "bytes": 578,
+    "sha256": "bd6f2df0417c6ede789e69c2863eff09f1834d0e538c44184fcd169f149f5ea0"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\metrics\\images_full_2026-11-01_14-49-05.json",
+    "copy": "metrics_full.json",
+    "bytes": 576,
+    "sha256": "d3d29f1c2e321b8a9773c96258a1d2a095ce9e9f04e9f957bf6c1b7c604bcead"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\videos\\full_set_29382_rgbs.mp4",
+    "copy": "videos/scene0061_step29381_full_rgb.mp4",
+    "bytes": 7015410,
+    "sha256": "c349de6001bfc25190ef2ec916c04cd0ff7f3eabc66f3440e2c6a6c1c8a6f53a"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\videos\\full_set_29382_gt_rgbs.mp4",
+    "copy": "videos/scene0061_full_gt.mp4",
+    "bytes": 9058125,
+    "sha256": "7ee93f96491b292a2d58680d5cd5eeb556ad652e43eb693641c7a3db4cea0f76"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\videos\\test_set_29382_rgbs.mp4",
+    "copy": "videos/scene0061_step29381_test_rgb.mp4",
+    "bytes": 2111749,
+    "sha256": "67d4c2bbbfcf67b64381d8785eabfc29a2555954f85226f7c10bfea25e791c8b"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\videos\\test_set_29382_gt_rgbs.mp4",
+    "copy": "videos/scene0061_test_gt.mp4",
+    "bytes": 2662245,
+    "sha256": "a5f321b1995aea1f4b92c076e4db4ef1369e3637d9f5cf03488803d201fb7cef"
+  },
+  {
+    "source": "E:\\ai_learning\\proposals\\omnire_nuscenes_seg\\cloud\\deliveries\\stage_1530\\run\\videos\\novel_29382\\front_center_interp.mp4",
+    "copy": "videos/scene0061_step29381_novel_front.mp4",
+    "bytes": 761489,
+    "sha256": "1a8f9ab7199367ba19a175c1a1cdffa0498fc4e23f29a4a0b3ee5b7bc103373c"
+  }
+]

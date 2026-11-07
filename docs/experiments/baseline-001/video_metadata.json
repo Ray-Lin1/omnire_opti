@@ -1,0 +1,47 @@
+[
+  {
+    "file": "videos/scene0061_full_gt.mp4",
+    "width": 1600,
+    "height": 608,
+    "frames": 191,
+    "duration_seconds": 19.1,
+    "average_fps": 10.0,
+    "codec": "avc1"
+  },
+  {
+    "file": "videos/scene0061_step29381_full_rgb.mp4",
+    "width": 1600,
+    "height": 608,
+    "frames": 191,
+    "duration_seconds": 19.1,
+    "average_fps": 10.0,
+    "codec": "avc1"
+  },
+  {
+    "file": "videos/scene0061_step29381_novel_front.mp4",
+    "width": 544,
+    "height": 304,
+    "frames": 191,
+    "duration_seconds": 7.958333,
+    "average_fps": 24.0,
+    "codec": "avc1"
+  },
+  {
+    "file": "videos/scene0061_step29381_test_rgb.mp4",
+    "width": 1600,
+    "height": 608,
+    "frames": 19,
+    "duration_seconds": 9.5,
+    "average_fps": 2.0,
+    "codec": "avc1"
+  },
+  {
+    "file": "videos/scene0061_test_gt.mp4",
+    "width": 1600,
+    "height": 608,
+    "frames": 19,
+    "duration_seconds": 9.5,
+    "average_fps": 2.0,
+    "codec": "avc1"
+  }
+]
