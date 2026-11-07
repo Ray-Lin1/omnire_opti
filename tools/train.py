@@ -293,6 +293,18 @@ def main(args):
             )
         metric_logger.update(**{"train_metrics/"+k: v.item() for k, v in metric_dict.items()})
         metric_logger.update(**{"train_stats/gaussian_num_" + k: v for k, v in trainer.get_gaussian_count().items()})
+        if step % cfg.logging.print_freq == 0 or step == trainer.num_iters:
+            progress = {
+                "step": int(step), "time": time.time(),
+                "losses": {k: float(v.detach()) for k, v in loss_dict.items()},
+                "gaussians": {k: int(v) for k, v in trainer.get_gaussian_count().items()},
+                "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
+                "peak_reserved_bytes": torch.cuda.max_memory_reserved(),
+            }
+            progress_path = os.path.join(cfg.log_dir, "progress.json")
+            with open(progress_path + ".tmp", "w") as f:
+                json.dump(progress, f, indent=2)
+            os.replace(progress_path + ".tmp", progress_path)
         metric_logger.update(**{"losses/"+k: v.item() for k, v in loss_dict.items()})
         metric_logger.update(**{"train_stats/lr_" + group['name']: group['lr'] for group in trainer.optimizer.param_groups})
         if args.enable_wandb:
@@ -346,7 +358,7 @@ def main(args):
     logger.info("Training done!")
 
     do_evaluation(
-        step=step,
+        step=int(trainer.step),
         cfg=cfg,
         trainer=trainer,
         dataset=dataset,

@@ -78,6 +78,8 @@ def main():
             status(stage='skipped',experiment=name,reason='reserve_evaluation_and_return'); continue
         folder=ROOT/'results/scene0061'/name
         log=ROOT/'logs'/f'{name}.log'
+        subprocess.check_call(['git','checkout','codex/'+name],cwd=CODE)
+        commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=CODE,text=True).strip()
         env=os.environ.copy()
         # Reserve time for the higher priority resolution comparison.
         end_time=min(DEADLINE, time.time()+(2.0*3600 if name=='exp-001-control' else 3.0*3600))
@@ -85,7 +87,7 @@ def main():
         status(stage='training',experiment=name,deadline=end_time)
         start=time.time()
         rc=run([PY,'tools/train.py','--config_file',f'configs/experiments/{name}.yaml',*common,'--run_name',name],log,env)
-        result=dict(experiment=name,train_exit=rc,seconds=time.time()-start,baseline_step=step)
+        result=dict(experiment=name,branch='codex/'+name,commit=commit,train_exit=rc,seconds=time.time()-start,baseline_step=step)
         if (folder/'checkpoint_final.pth').exists():
             c=torch.load(folder/'checkpoint_final.pth',map_location='cpu'); result['final_step']=int(c['step']); del c
             status(stage='evaluating',experiment=name)
