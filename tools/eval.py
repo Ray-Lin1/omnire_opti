@@ -32,6 +32,8 @@ def do_evaluation(
     log_metrics: bool = True
 ):
     trainer.set_eval()
+    if hasattr(trainer, "render_each_class"):
+        trainer.render_each_class = cfg.render.get("eval_render_each_class", True)
 
     logger.info("Evaluating Pixels...")
     if dataset.test_image_set is not None and cfg.render.render_test:

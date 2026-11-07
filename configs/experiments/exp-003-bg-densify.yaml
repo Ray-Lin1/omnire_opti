@@ -261,6 +261,7 @@ render:
   vis_lidar: false
   vis_sky: false
   vis_error: false
+  eval_render_each_class: false
 logging:
   vis_freq: 2000
   print_freq: 100

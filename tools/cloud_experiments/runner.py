@@ -33,7 +33,8 @@ def package(name, result):
     folder = ROOT / 'results/scene0061' / name
     folder.mkdir(parents=True, exist_ok=True)
     (folder / 'RESULT.json').write_text(json.dumps(result, indent=2))
-    files = [p for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts]
+    files = [p for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts
+             and (not p.name.startswith('checkpoint_') or p.name in ['checkpoint_final.pth','checkpoint_35000.pth'])]
     manifest = []
     for p in files:
         h = hashlib.sha256()
@@ -44,7 +45,8 @@ def package(name, result):
     (folder / 'MANIFEST.json').write_text(json.dumps(manifest, indent=2))
     archive = ROOT / 'results' / (name + '.tar.gz')
     with tarfile.open(str(archive)+'.part', 'w:gz', compresslevel=1) as t:
-        t.add(folder, arcname=name)
+        for p in files + [folder/'MANIFEST.json']:
+            t.add(p,arcname=str(Path(name)/p.relative_to(folder)),recursive=False)
     Path(str(archive)+'.part').replace(archive)
     (ROOT / 'reports' / (name + '.ready.json')).write_text(json.dumps(dict(archive=str(archive),bytes=archive.stat().st_size,result=result),indent=2))
 
