@@ -216,6 +216,8 @@ class RigidNodes(VanillaGaussians):
                     if group["name"] == self.class_prefix+"opacity":
                         old_params = group["params"][0]
                         param_state = optimizer.state[old_params]
+                        if "exp_avg" not in param_state:
+                            continue
                         param_state["exp_avg"] = torch.zeros_like(param_state["exp_avg"])
                         param_state["exp_avg_sq"] = torch.zeros_like(param_state["exp_avg_sq"])
             self.xys_grad_norm = None

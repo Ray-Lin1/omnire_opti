@@ -1,0 +1,303 @@
+data:
+  data_root: /root/omnire_exp_20261107/bundle/output/processed_10Hz/mini
+  dataset: nuscenes
+  end_timestep: -1
+  lidar_source:
+    lidar_downsample_factor: 4
+    lidar_percentile: 0.02
+    load_lidar: true
+    type: datasets.nuscenes.nuscenes_sourceloader.NuScenesLiDARSource
+  pixel_source:
+    cameras:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    downscale: 1
+    downscale_when_loading:
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    - 3
+    load_dynamic_mask: true
+    load_objects: true
+    load_sky_mask: true
+    load_smpl: true
+    sampler:
+      buffer_downscale: 8
+      buffer_ratio: 0.5
+      start_enhance_weight: 3
+    test_image_stride: 10
+    type: datasets.nuscenes.nuscenes_sourceloader.NuScenesPixelSource
+    undistort: false
+  preload_device: cpu
+  scene_idx: 0
+  start_timestep: 0
+logging:
+  print_freq: 100
+  save_seperate_video: true
+  saveckpt_freq: 5000
+  vis_freq: 2000
+model:
+  Affine:
+    optim:
+      all:
+        lr: 1.0e-05
+        weight_decay: 1.0e-06
+    params:
+      base_mlp_layer_width: 64
+      embedding_dim: 4
+      pixel_affine: false
+    type: models.modules.AffineTransform
+  Background:
+    init:
+      far_randoms: 100000
+      from_lidar:
+        num_samples: 800000
+        return_color: true
+      near_randoms: 100000
+    reg:
+      sharp_shape_reg:
+        max_gauss_ratio: 10.0
+        step_interval: 10
+        w: 1.0
+    type: models.gaussians.VanillaGaussians
+  CamPose:
+    optim:
+      all:
+        lr: 1.0e-05
+        weight_decay: 1.0e-06
+    type: models.modules.CameraOptModule
+  DeformableNodes:
+    ctrl:
+      cull_out_of_bound: false
+      cull_scale_thresh: 0.1
+      reset_alpha_value: 0.1
+      sh_degree: 3
+      stop_optimizing_canonical_xyz: true
+      stop_screen_size_at: 40000
+      stop_split_at: 30000
+      use_deformgs_after: 4000
+      use_deformgs_for_nonrigid: true
+    init:
+      instance_max_pts: 5000
+      only_moving: true
+      traj_length_thres: 0.5
+    networks:
+      D: 8
+      W: 256
+      deform_quat: true
+      deform_scale: false
+      embed_dim: 16
+      t_multires: 10
+      x_multires: 10
+    optim:
+      deform_network:
+        lr: 0.0016
+        lr_final: 0.00016
+        scale_factor: 5.0
+      embedding:
+        lr: 0.001
+        lr_final: 0.0001
+      ins_rotation:
+        lr: 1.0e-05
+        lr_final: 5.0e-06
+      ins_translation:
+        lr: 0.0005
+        lr_final: 0.0001
+      xyz:
+        lr: 0.00016
+        lr_final: 1.6e-06
+        scale_factor: 2.0
+    reg:
+      out_of_bound_loss:
+        stop_after: 40000
+        w: 1.0
+      sharp_shape_reg:
+        max_gauss_ratio: 10.0
+        step_interval: 10
+        w: 1.0
+      temporal_smooth_reg:
+        trans:
+          smooth_range: 5
+          w: 0.01
+    type: models.nodes.DeformableNodes
+  RigidNodes:
+    ctrl:
+      cull_out_of_bound: true
+      cull_scale_thresh: 0.1
+      densify_grad_thresh: 0.0002
+      stop_screen_size_at: 40000
+      stop_split_at: 30000
+    init:
+      instance_max_pts: 5000
+      only_moving: true
+      traj_length_thres: 1.0
+    optim:
+      ins_rotation:
+        lr: 1.0e-05
+        lr_final: 5.0e-06
+      ins_translation:
+        lr: 0.0005
+        lr_final: 0.0001
+    reg:
+      sharp_shape_reg:
+        max_gauss_ratio: 10.0
+        step_interval: 10
+        w: 1.0
+      temporal_smooth_reg:
+        trans:
+          smooth_range: 5
+          w: 0.01
+    type: models.nodes.RigidNodes
+  SMPLNodes:
+    ctrl:
+      ball_gaussians: false
+      constrain_xyz_offset: false
+      freeze_o: false
+      freeze_q: false
+      freeze_s: false
+      freeze_shs_dc: false
+      freeze_shs_rest: false
+      freeze_x: false
+      knn_neighbors: 3
+      knn_update_interval: 100
+      opacity_init_value: 0.99
+      sh_degree: 1
+      use_voxel_deformer: true
+    init:
+      only_moving: true
+      traj_length_thres: 0.5
+    optim:
+      ins_rotation:
+        lr: 1.0e-05
+        lr_final: 5.0e-06
+      ins_translation:
+        lr: 0.0005
+        lr_final: 0.0001
+      rotation:
+        lr: 0.005
+      sh_dc:
+        lr: 0.005
+      sh_rest:
+        lr: 0.00025
+      smpl_rotation:
+        lr: 5.0e-05
+        lr_final: 1.0e-05
+      w_dc_vox:
+        lr: 0.0001
+        lr_final: 1.0e-05
+        opt_after: 10000
+      xyz:
+        lr: 0.00016
+        lr_final: 1.6e-06
+        scale_factor: 3.0
+    reg:
+      knn_reg:
+        lambda_std_o: 0.001
+        lambda_std_q: 0.001
+        lambda_std_s: 0.001
+        lambda_std_shs_dc: 0.001
+        lambda_std_shs_rest: 0.001
+      max_s_square_reg:
+        w: 0.05
+      sharp_shape_reg:
+        max_gauss_ratio: 10.0
+        step_interval: 10
+        w: 1.0
+      temporal_smooth_reg:
+        trans:
+          smooth_range: 5
+          w: 0.01
+      voxel_deformer_reg:
+        lambda_std_w: 0.6
+        lambda_std_w_rest: 0.5
+        lambda_w_norm: 0.6
+        lambda_w_rest_norm: 0.3
+      x_offset:
+        w: 0.2
+    type: models.nodes.SMPLNodes
+  Sky:
+    optim:
+      all:
+        lr: 0.01
+    params:
+      resolution: 1024
+    type: models.modules.EnvLight
+render:
+  eval_render_each_class: false
+  fps: 10
+  render_full: false
+  render_novel: null
+  render_test: false
+  vis_error: false
+  vis_lidar: false
+  vis_sky: false
+seed: 0
+trainer:
+  gaussian_ctrl_general_cfg:
+    cull_alpha_thresh: 0.005
+    cull_scale_thresh: 0.5
+    cull_screen_size: 0.15
+    densify_grad_thresh: 0.0003
+    densify_size_thresh: 0.002
+    n_split_samples: 2
+    refine_interval: 100
+    reset_alpha_interval: 4000
+    reset_alpha_value: 0.01
+    sh_degree: 3
+    sh_degree_interval: 1000
+    split_screen_size: 0.05
+    stop_screen_size_at: 5000
+    stop_split_at: 20000
+    warmup_steps: 500
+  gaussian_optim_general_cfg:
+    opacity:
+      lr: 0.05
+    rotation:
+      lr: 0.001
+    scaling:
+      lr: 0.005
+    sh_dc:
+      lr: 0.0025
+    sh_rest:
+      lr: 0.000125
+    xyz:
+      lr: 0.00016
+      lr_final: 1.6e-06
+      scale_factor: scene_radius
+  losses:
+    affine:
+      w: 1.0e-05
+    depth:
+      inverse_depth: false
+      loss_type: l1
+      normalize: false
+      w: 0.01
+    mask:
+      opacity_loss_type: bce
+      w: 0.05
+    rgb:
+      w: 0.8
+    ssim:
+      w: 0.2
+  optim:
+    cache_buffer_freq: 2000
+    num_iters: 40000
+    use_grad_scaler: false
+  render:
+    absgrad: true
+    antialiased: false
+    batch_size: 1
+    far_plane: 10000000000.0
+    near_plane: 0.1
+    packed: false
+    sparse_grad: false
+  res_schedule:
+    double_steps: 250
+    downscale_times: 2
+  type: models.trainers.MultiTrainer
