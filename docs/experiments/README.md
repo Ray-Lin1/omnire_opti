@@ -4,6 +4,8 @@
 
 [多实验同步视频及布局说明](comparisons/videos/README.md) · [前视同屏总览](comparisons/videos/all_experiments_front.mp4)
 
+[五组实验统一指标表与结论](RESULTS-EXP001-005.md)
+
 | 实验 | 内容 | 初始化 | 状态 | 报告 |
 |---|---|---|---|---|
 | EXP-001 | 原配置续训对照 | baseline 29,381 步 | 已完成至 40,000 步 | [报告](exp-001-control.md) |
