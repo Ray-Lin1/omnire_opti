@@ -1,0 +1,13 @@
+{
+  "image_metrics/full/psnr": 26.624027841378258,
+  "image_metrics/full/ssim": 0.8461506560730893,
+  "image_metrics/full/lpips": 0.16069213196921306,
+  "image_metrics/full/occupied_psnr": 26.645271545929436,
+  "image_metrics/full/occupied_ssim": 0.8465704740290034,
+  "image_metrics/full/masked_psnr": 25.360885059075688,
+  "image_metrics/full/masked_ssim": 0.8088132723429129,
+  "image_metrics/full/human_psnr": 24.109031562493225,
+  "image_metrics/full/human_ssim": 0.7749568986767363,
+  "image_metrics/full/vehicle_psnr": 26.119815135775767,
+  "image_metrics/full/vehicle_ssim": 0.8273313039237946
+}

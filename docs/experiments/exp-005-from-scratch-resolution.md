@@ -1,6 +1,6 @@
 # EXP-005：高清输入从头训练
 
-状态：**已进入顺序队列，等待 EXP-004 完成**。分支 `codex/exp-005-from-scratch-resolution`，运行源码 `51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
+状态：**云端训练中**。2026-11-08 13:42 左右，在 EXP-004 评估及云端打包完成后启动；分支 `codex/exp-005-from-scratch-resolution`，运行源码 `51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
 
 ## 目的与设置
 
@@ -21,4 +21,4 @@ python tools/train.py --config_file configs/experiments/exp-005-from-scratch-res
 
 ## 结果
 
-尚未开始本组的优化迭代，不填写指标或收益结论。最终以同一步数、共同分辨率的留出集 PSNR/SSIM/LPIPS、区域指标、同帧细节与运行成本共同判断。
+已开始优化迭代，尚无最终评估指标，不填写收益结论。最终以同一步数、共同分辨率的留出集 PSNR/SSIM/LPIPS、区域指标、同帧细节与运行成本共同判断。

@@ -1,28 +1,26 @@
 # EXP-004：原配置从头训练
 
-状态：**云端训练中**。2026-11-08 08:31 左右启动；分支 `codex/exp-004-from-scratch-control`，运行源码 `51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
+状态：训练与评估已完成。本记录由回传流程自动整理，尚未进行人工同帧复核；不据此声称优化机制已得到验证。
 
-## 目的与设置
+- 更新时间：2026-11-08T13:50:58+08:00。
+- 分支：`codex/exp-004-from-scratch-control`；实际运行源码：`51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
+- 初始化：从数据开始，`resume_from=None`，目标 40,000 步；最终模型步号：40000。
+- 主训练进程退出码：0；耗时 5.078 小时，不含独立流式评估。
+- 已回传并校验 331 个清单文件；模型、完整日志和原始输出位于 `E:\ai_learning\omnire_opti\artifacts\20261108-fresh\exp-004-from-scratch-control`。
+- [配置](../../configs/experiments/exp-004-from-scratch-control.yaml)
 
-为从头训练的高清实验建立公平对照，不使用昨晚任何模型作为初始化。
+## 留出集指标
 
-- scene-0061、191 时刻、六相机、seed=0，沿用原划分和评估掩码。
-- 从 LiDAR、随机点、实例与 SMPL 数据初始化，**没有 `--resume_from`**。
-- 全局 step 从 0 开始，位置学习率从 `1.6e-4 × scene_radius` 开始，目标 40,000 步。
-- 加载尺寸约 533×300；背景停止增密步数为 20,000。
-- 每 5,000 步保存检查点；稳定训练每 15 分钟查询一次。
+| 指标 | 共同约 533×300 留出集 |
+|---|---:|
+| psnr | 23.082887080677768 |
+| ssim | 0.6855715518457848 |
+| lpips | 0.1895934154459259 |
+| human_ssim | 0.5532890345858431 |
+| vehicle_ssim | 0.5551861988549883 |
 
-[完整配置](../../configs/experiments/exp-004-from-scratch-control.yaml)
+原始指标及短视频见本实验同名目录。原生与共同分辨率结果分开保存；全场景指标包含训练与留出图像。以 EXP-004 和 EXP-005 同步数、同评估尺寸的结果作方法对照。
 
-```bash
-export PYTHONPATH="$PWD"
-python tools/train.py --config_file configs/experiments/exp-004-from-scratch-control.yaml --output_root /root/omnire_exp_20261108_fresh/results --project scene0061 --run_name exp-004-from-scratch-control
-```
+## 判断范围
 
-评估在模型保存后独立执行 `tools/stream_eval.py`，逐帧累计指标并写视频，避免全场景结果常驻内存。EXP-005 与本组使用相同评估实现。
-
-云端结果目录：`/root/omnire_exp_20261108_fresh/results/scene0061/exp-004-from-scratch-control/`。本地回传目录：`artifacts/20261108-fresh/exp-004-from-scratch-control/`。
-
-## 结果
-
-尚未完成，不填写指标或收益结论。主要对照为本组与 EXP-005 同为 40,000 步、同为约 533×300 评估尺寸的留出集结果。
+单场景、单种子；量化结果已取得时仍需结合固定帧图像判断文字、树叶与人体边缘，效果结论暂不自动判定。
