@@ -1,0 +1,54 @@
+{
+  "models": [
+    {
+      "experiment": "exp-001-control",
+      "step": 35000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-001-control/checkpoint_35000.pth",
+      "bytes": 791960500,
+      "sha256": "b40ba9c69c704ad79b99e7d5e759df5a518375f4b7ca195c7ea3148b5e962bfa",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    },
+    {
+      "experiment": "exp-001-control",
+      "step": 40000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-001-control/checkpoint_final.pth",
+      "bytes": 737610932,
+      "sha256": "45a4631dd69b620c0da8c65e483766bd06c9356e8c17b8203ca335faff83761e",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    },
+    {
+      "experiment": "exp-002-resolution",
+      "step": 35000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-002-resolution/checkpoint_35000.pth",
+      "bytes": 795214772,
+      "sha256": "931c865de4542786d8e01c6516a8777cc297b403abfa36ae47609675d31712b6",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    },
+    {
+      "experiment": "exp-002-resolution",
+      "step": 40000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-002-resolution/checkpoint_final.pth",
+      "bytes": 750949044,
+      "sha256": "f3d8376bbb1cd11cb6ef9cd67182611926a64a4034bf90549b6943807b5a3b88",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    },
+    {
+      "experiment": "exp-003-bg-densify",
+      "step": 35000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-003-bg-densify/checkpoint_35000.pth",
+      "bytes": 1244816052,
+      "sha256": "b03ab7ebb2d52c3dbe2e7beb1554024db0f229e3296174ad1f506fe444974ae6",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    },
+    {
+      "experiment": "exp-003-bg-densify",
+      "step": 40000,
+      "local_path": "E:/ai_learning/omnire_opti/artifacts/20261107/exp-003-bg-densify/checkpoint_final.pth",
+      "bytes": 1041966900,
+      "sha256": "2cf0a3ebd3a6b81f2eb60fa7a483101d335133359f945134c45dea5fceb0381f",
+      "training_source_commit": "4d391e7721aaec04a0f50b08416dd7f8e955913f"
+    }
+  ],
+  "baseline_sha256": "b35d159add7a01ae899b2aa321373181a92691ff6ec81cac4ac0b6867a5db7f4",
+  "all_returned_and_verified": true
+}

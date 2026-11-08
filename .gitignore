@@ -188,3 +188,9 @@ cython_debug/
 local_scripts
 .codex-review/
 artifacts/
+
+# Experiment audit material stays in the local artifact archive.
+docs/experiments/qa-*/
+docs/experiments/**/MANIFEST.json
+docs/experiments/**/RETURN_VERIFICATION.json
+docs/experiments/**/progress.json
