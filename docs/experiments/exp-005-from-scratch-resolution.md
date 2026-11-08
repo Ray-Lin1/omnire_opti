@@ -1,24 +1,39 @@
 # EXP-005：高清输入从头训练
 
-状态：**云端训练中**。2026-11-08 13:42 左右，在 EXP-004 评估及云端打包完成后启动；分支 `codex/exp-005-from-scratch-resolution`，运行源码 `51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
+状态：训练与评估已完成。本记录由回传流程自动整理，尚未进行人工同帧复核；不据此声称优化机制已得到验证。
 
-## 目的与设置
+- 更新时间：2026-11-08T19:44:34+08:00。
+- 分支：`codex/exp-005-from-scratch-resolution`；实际运行源码：`51bfdac3e202d6373c42705e0a7e01f36ac11f5f`。
+- 初始化：从数据开始，`resume_from=None`，目标 40,000 步；最终模型步号：40000。
+- 主训练进程退出码：0；耗时 5.599 小时，不含独立流式评估。
+- 已回传并校验 379 个清单文件；模型、完整日志和原始输出位于 `E:\ai_learning\omnire_opti\artifacts\20261108-fresh\exp-005-from-scratch-resolution`。
+- [配置](../../configs/experiments/exp-005-from-scratch-resolution.yaml)
 
-检验从初始化阶段使用高清输入，配合完整学习率与早期增密，是否比晚期切换更有效。
+## 留出集指标
 
-与 EXP-004 唯一主要变量是六相机加载尺寸由约 533×300 改为 **800×450**。同样从数据初始化、step=0、seed=0、目标 40,000 步，采用相同损失、增密策略、划分和保存频率；不加载 EXP-004 或历史 baseline 的权重。
+| 指标 | 共同约 533×300 留出集 |
+|---|---:|
+| psnr | 23.152472529494972 |
+| ssim | 0.6930480492219591 |
+| lpips | 0.19801270275523788 |
+| human_ssim | 0.5529761227040455 |
+| vehicle_ssim | 0.5686091544163047 |
 
-[完整配置](../../configs/experiments/exp-005-from-scratch-resolution.yaml)
+原始指标及短视频见本实验同名目录。原生与共同分辨率结果分开保存；全场景指标包含训练与留出图像。以 EXP-004 和 EXP-005 同步数、同评估尺寸的结果作方法对照。
 
-```bash
-export PYTHONPATH="$PWD"
-python tools/train.py --config_file configs/experiments/exp-005-from-scratch-resolution.yaml --output_root /root/omnire_exp_20261108_fresh/results --project scene0061 --run_name exp-005-from-scratch-resolution
-```
+## 判断范围
 
-在原生 800×450 和共同约 533×300 两种尺寸下分别用 `tools/stream_eval.py` 独立评估。原生指标不与较低尺寸的结果直接混比。
+单场景、单种子；量化结果已取得时仍需结合固定帧图像判断文字、树叶与人体边缘，效果结论暂不自动判定。
 
-云端结果目录：`/root/omnire_exp_20261108_fresh/results/scene0061/exp-005-from-scratch-resolution/`。本地回传目录：`artifacts/20261108-fresh/exp-005-from-scratch-resolution/`。
+## 与 EXP-004 的量化对照
 
-## 结果
+相同 40,000 步、相同约 533×300 留出集：
 
-已开始优化迭代，尚无最终评估指标，不填写收益结论。最终以同一步数、共同分辨率的留出集 PSNR/SSIM/LPIPS、区域指标、同帧细节与运行成本共同判断。
+| 实验 | PSNR ↑ | SSIM ↑ | LPIPS ↓ |
+|---|---:|---:|---:|
+| EXP-004 | 23.082887 | 0.685572 | 0.189593 |
+| EXP-005 | 23.152473 | 0.693048 | 0.198013 |
+
+高清输入带来 PSNR +0.0696 dB、SSIM +0.00748，但 LPIPS 变差约 0.00842；目前没有一致的量化收益。人工同帧可视化尚未完成，不能据此认定模糊已经改善。
+
+原生 800×450 留出集为 PSNR 22.934088、SSIM 0.675408、LPIPS 0.256038，不能与较低尺寸指标直接混比。两轮评估退出码均为 0。
